@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import PortfolioBot from "./components/PortfolioBot";
 import { FiArrowRight, FiGithub, FiLinkedin, FiMail, FiCode, FiCpu, FiDatabase, FiGlobe, FiLayers, FiServer, FiZap, FiActivity } from 'react-icons/fi';
 
 export default function Home() {
@@ -283,6 +284,22 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Chat Bot Section */}
+        <section className="py-12 md:py-20">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              Chat With Me
+            </h2>
+            <p className="max-w-xl mx-auto text-base md:text-lg lg:text-xl text-slate-400">
+              Ask my AI assistant about my skills, projects, or experience
+            </p>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <PortfolioBot />
           </div>
         </section>
       </div>
