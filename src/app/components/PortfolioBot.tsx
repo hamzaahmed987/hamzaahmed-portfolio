@@ -15,7 +15,7 @@ export default function PortfolioBot() {
       id: "sys-hello",
       role: "assistant",
       content:
-        "Hi! I'm Hamza&apos;s portfolio assistant. Ask me about his skills, projects, or anything related to his work.",
+        "Hi! I'm Hamza's portfolio assistant. Ask me about his skills, projects, or anything related to his work.",
     },
   ]);
   const [input, setInput] = useState("");
