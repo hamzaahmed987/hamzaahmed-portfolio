@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FiSend, FiUser, FiZap } from "react-icons/fi";
+import { FiSend, FiZap } from "react-icons/fi";
+
+type Message = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+};
 
 export default function PortfolioBot() {
-  const [messages, setMessages] = useState<{ id: string; role: "user" | "assistant"; content: string }[]>([
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: "sys-hello",
       role: "assistant",
-      content: "Hi! I'm Hamza's portfolio assistant. Ask me about his skills, projects, or anything related to his work.",
+      content:
+        "Hi! I'm Hamza&apos;s portfolio assistant. Ask me about his skills, projects, or anything related to his work.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -24,7 +31,12 @@ export default function PortfolioBot() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const userMessage = { id: Date.now().toString(), role: "user" as const, content: input };
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+    };
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
@@ -33,9 +45,7 @@ export default function PortfolioBot() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
@@ -43,7 +53,7 @@ export default function PortfolioBot() {
 
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
-      let assistantMessage = { id: Date.now().toString(), role: "assistant" as const, content: "" };
+      const assistantMessage: Message = { id: Date.now().toString(), role: "assistant", content: "" };
 
       setMessages((prev) => [...prev, assistantMessage]);
 
@@ -53,8 +63,9 @@ export default function PortfolioBot() {
         assistantMessage.content += decoder.decode(value, { stream: true });
         setMessages((prev) => [...prev.slice(0, -1), { ...assistantMessage }]);
       }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +79,7 @@ export default function PortfolioBot() {
         </div>
         <div>
           <h2 className="text-xl font-bold text-white">Portfolio Assistant</h2>
-          <p className="text-sm text-purple-200">Ask me about Hamza's work</p>
+          <p className="text-sm text-purple-200">Ask me about Hamza&apos;s work</p>
         </div>
       </div>
 
@@ -82,16 +93,11 @@ export default function PortfolioBot() {
                   : "bg-white/10 backdrop-blur-sm text-slate-200 border border-white/10"
               }`}
             >
-              {/* {m.role === "user" && (
-                <div className="flex items-center gap-2 mb-1">
-                  <FiUser className="w-3 h-3" />
-                  <span className="text-xs font-medium">You</span>
-                </div>
-              )} */}
               {m.content}
             </div>
           </div>
         ))}
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%] rounded-2xl px-4 py-3 text-sm bg-white/10 backdrop-blur-sm text-slate-200 border border-white/10">
@@ -106,6 +112,7 @@ export default function PortfolioBot() {
             </div>
           </div>
         )}
+
         {error && (
           <div className="flex justify-start">
             <div className="max-w-[85%] rounded-2xl px-4 py-3 text-sm bg-red-500/20 backdrop-blur-sm text-red-200 border border-red-500/30">
@@ -113,6 +120,7 @@ export default function PortfolioBot() {
             </div>
           </div>
         )}
+
         <div ref={endRef} />
       </div>
 
@@ -120,7 +128,7 @@ export default function PortfolioBot() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about Hamza's skills or projects..."
+          placeholder="Ask about Hamza&apos;s skills or projects..."
           className="flex-1 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm px-4 py-3 text-sm text-white placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
           disabled={isLoading}
         />
@@ -134,12 +142,11 @@ export default function PortfolioBot() {
       </form>
 
       <p className="mt-4 text-xs text-slate-400 text-center">
-        Try asking: "What projects has Hamza built?" or "What technologies does Hamza use?"
+        Try asking: &quot;What projects has Hamza built?&quot; or &quot;What technologies does Hamza use?&quot;
       </p>
     </div>
   );
 }
-
 
 
 
